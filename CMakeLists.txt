@@ -1,0 +1,13 @@
+idf_component_register(SRCS "src/ansic1218/transport.cpp"
+                            "src/ansic1218/crc.cpp"
+                            "src/ansic1218/services/identification.cpp"
+                            "src/ansic1218/services/read-full.cpp"
+                            "src/ansic1218/services/read-partial.cpp"
+                            "src/ansic1218/services/security.cpp"
+                            "src/ansic1218/services/service.cpp"
+                            "src/ansic1218/services/write-full.cpp"
+                            "src/ansic1218/services/write-partial.cpp"
+                            "src/ansic1218/tables/table.cpp"
+                    INCLUDE_DIRS "include/"
+                    PRIV_INCLUDE_DIRS "include/ansic1218/" "include/ansic1218/services" "include/ansic1218/tables"
+                    REQUIRES mbedtls)

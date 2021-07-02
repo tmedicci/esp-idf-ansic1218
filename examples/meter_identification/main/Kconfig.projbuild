@@ -1,0 +1,44 @@
+menu "ANSI C12.18 Meter Identification Example"
+
+    config ANSI_EXAMPLE_UART_PORT_NUM
+        int "ANSI's UART port number"
+        range 0 2 if IDF_TARGET_ESP32
+        range 0 1 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32C3
+        default 2 if IDF_TARGET_ESP32
+        default 1 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32C3
+        help
+            UART communication port number for the ANSI protocol.
+
+    config ANSI_EXAMPLE_UART_BAUD_RATE
+        int "ANSI's UART communication speed"
+        range 300 256000
+        default 9600
+        help
+            UART communication speed for the ANSI protocol.
+
+    config ANSI_EXAMPLE_UART_RXD
+        int "ANSI's UART RXD pin number"
+        range 0 34 if IDF_TARGET_ESP32
+        range 0 46 if IDF_TARGET_ESP32S2
+        range 0 19 if IDF_TARGET_ESP32C3
+        default 26
+        help
+            GPIO number for ANSI's UART RX pin. See UART documentation for more information
+            about available pin numbers for UART.
+
+    config ANSI_EXAMPLE_UART_TXD
+        int "UART TXD pin number"
+        range 0 34 if IDF_TARGET_ESP32
+        range 0 46 if IDF_TARGET_ESP32S2
+        range 0 19 if IDF_TARGET_ESP32C3
+        default 25
+        help
+            GPIO number for ANSI's UART TX pin. See UART documentation for more information
+            about available pin numbers for UART.
+
+    config ANSI_EXAMPLE_METER_PASSWORD
+        string "Meter Password (32-byte hex string)"
+        default "0000000000000000000000000000000000000000000000000000000000000000"
+        help
+            This option sets the password of the security service of the ANSI C12.18.
+endmenu
