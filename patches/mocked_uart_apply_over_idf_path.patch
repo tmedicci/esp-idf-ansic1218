@@ -1,0 +1,106 @@
+diff --git a/components/driver/CMakeLists.txt b/components/driver/CMakeLists.txt
+index b516b255e..2b7baf198 100644
+--- a/components/driver/CMakeLists.txt
++++ b/components/driver/CMakeLists.txt
+@@ -1,3 +1,4 @@
++idf_build_get_property(driver_mock CONFIG_DRIVER_MOCK)
+ idf_build_get_property(target IDF_TARGET)
+ 
+ set(srcs
+@@ -19,8 +20,7 @@ set(srcs
+     "spi_slave.c"
+     "spi_bus_lock.c"
+     "timer.c"
+-    "twai.c"
+-    "uart.c")
++    "twai.c")
+ 
+ set(includes "include" "${target}/include")
+ 
+@@ -72,13 +72,72 @@ if(IDF_TARGET STREQUAL "esp32c3")
+                      "esp32c3/rtc_tempsensor.c")
+ endif()
+ 
++set (requires "esp_ringbuf" "freertos" "soc" "hal" "esp_hw_support")
++
++if(${driver_mock})
++    message(STATUS "building driver/uart mock")
++
++    set(IDF_PATH $ENV{IDF_PATH})
++    set(CMOCK_DIR "${IDF_PATH}/components/cmock/CMock")
++    set(MOCK_GEN_DIR "${CMAKE_CURRENT_BINARY_DIR}/mocks")
++
++    file(MAKE_DIRECTORY ${MOCK_GEN_DIR})
++
++    set(MOCK_OUTPUT
++        "${MOCK_GEN_DIR}/Mockuart.c" "${MOCK_GEN_DIR}/Mockuart.h"
++        "${MOCK_GEN_DIR}/Mockuart_select.c" "${MOCK_GEN_DIR}/Mockuart_select.h")
++
++    set(MOCK_HEADERS
++        ${CMAKE_CURRENT_SOURCE_DIR}/include/driver/uart.h
++        ${CMAKE_CURRENT_SOURCE_DIR}/include/driver/uart_select.h
++        )
++
++    set(ENV{UNITY_DIR} "$ENV{IDF_PATH}/components/cmock/CMock")
++
++    list(APPEND includes "${MOCK_GEN_DIR}" "include/driver")
++
++    list(APPEND srcs "${MOCK_GEN_DIR}/Mockuart.c"
++        "${MOCK_GEN_DIR}/Mockuart_select.c")
++
++    list(APPEND requires "cmock")
++
++else()
++
++    message(STATUS "building actual drivers...")
++
++    list(APPEND srcs "uart.c")
++
++endif()
++
+ idf_component_register(SRCS "${srcs}"
+                     INCLUDE_DIRS ${includes}
+                     PRIV_INCLUDE_DIRS "include/driver"
+                     PRIV_REQUIRES efuse esp_pm esp_timer esp_ipc
+-                    REQUIRES esp_ringbuf freertos soc hal esp_hw_support
++                    REQUIRES ${requires}
+                     LDFRAGMENTS linker.lf)
+ # (REQUIRES cannot hide soc headers, since many arguments in the driver headers are chip-dependent)
+ 
+ # uses C11 atomic feature
+ set_source_files_properties(spi_master.c PROPERTIES COMPILE_FLAGS -std=gnu11)
++
++if(${driver_mock})
++    add_custom_command(
++        OUTPUT ruby_found SYMBOLIC
++        COMMAND "ruby" "-v"
++        COMMENT "Try to find ruby. If this fails, you need to install ruby"
++    )
++
++    # This command builds the mocks.
++    # First, environment variable UNITY_DIR is set. This is necessary to prevent unity from looking in its own submodule
++    # which doesn't work in our CI yet...
++    # The rest is a straight forward call to cmock.rb, consult cmock's documentation for more information.
++    add_custom_command(
++        OUTPUT ${MOCK_OUTPUT}
++        DEPENDS ruby_found
++        COMMAND ${CMAKE_COMMAND} -E env "UNITY_DIR=${IDF_PATH}/components/unity/unity"
++            ruby
++            ${CMOCK_DIR}/lib/cmock.rb
++            -o${CMAKE_CURRENT_SOURCE_DIR}/mock/mock_config.yaml
++            ${MOCK_HEADERS}
++      )
++endif()
+diff --git a/components/driver/mock/mock_config.yaml b/components/driver/mock/mock_config.yaml
+new file mode 100644
+index 000000000..60dd3b526
+--- /dev/null
++++ b/components/driver/mock/mock_config.yaml
+@@ -0,0 +1,7 @@
++        :cmock:
++          :plugins:
++            - expect
++            - expect_any_args
++            - return_thru_ptr
++            - array
++            - callback
