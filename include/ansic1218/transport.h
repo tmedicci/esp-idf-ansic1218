@@ -28,7 +28,6 @@
 
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
-// #include "esp_system.h"
 #include "driver/uart.h"
 #include "string.h"
 #include "driver/gpio.h"
