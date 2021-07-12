@@ -182,20 +182,17 @@ bool Transport::wait(std::vector<uint8_t> &buffer, const vector<uint8_t> &data)
 int Transport::receive(vector<uint8_t> &buffer, size_t size)
 {
 
-    uint8_t *data_c = (uint8_t *)malloc(size);
+    buffer.resize(buffer.size() + size);
 
-    auto nBytesRead = uart_read_bytes(uart_num, data_c, size, 2000 / portTICK_RATE_MS);
+    auto ptr = buffer.data() + buffer.size() - size;
+
+    auto nBytesRead = uart_read_bytes(uart_num, ptr, size, 2000 / portTICK_RATE_MS);
 
     if (nBytesRead != size)
     {
         ESP_LOGD(TAG, "Receive() received less bytes than expected. expected: %d, received: %d", size, nBytesRead);
         return false;
     }
-
-    buffer.reserve(size);
-    copy(&data_c[0], &data_c[size], back_inserter(buffer));
-
-    free(data_c);
 
     ESP_LOGD(TAG, "received(): %s .", bufToStr(buffer.cbegin(), buffer.cend()).c_str());
 
