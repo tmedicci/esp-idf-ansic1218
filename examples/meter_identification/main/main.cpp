@@ -9,11 +9,13 @@
 
 #include <iostream>
 
-extern "C" {
+extern "C"
+{
 #include "driver/uart.h"
 #include "esp_log.h"
 }
 
+#include "ansic1218/serial.h"
 #include "ansic1218/transport.h"
 #include "ansic1218/services/identification.h"
 #include "ansic1218/services/security.h"
@@ -57,16 +59,20 @@ extern "C" void app_main(void)
     try
     {
 
-        ansic1218::Transport transport(CONFIG_ANSI_EXAMPLE_UART_PORT_NUM,
-                                       CONFIG_ANSI_EXAMPLE_UART_BAUD_RATE,
-                                       CONFIG_ANSI_EXAMPLE_UART_TXD,
-                                       CONFIG_ANSI_EXAMPLE_UART_RXD);
+        auto serial = make_shared<Serial>();
+
+        serial->open(CONFIG_ANSI_EXAMPLE_UART_PORT_NUM,
+                     CONFIG_ANSI_EXAMPLE_UART_BAUD_RATE,
+                     CONFIG_ANSI_EXAMPLE_UART_TXD,
+                     CONFIG_ANSI_EXAMPLE_UART_RXD);
+
+        Transport transport(serial);
 
         Identification identification;
 
         if (!transport.request(identification))
         {
-            ESP_LOGE("main", "não conseguiu requisitar uma identidade");
+            ESP_LOGE("main", "Could not request identity service");
             return;
         }
 
@@ -74,7 +80,7 @@ extern "C" void app_main(void)
 
         if (!transport.request(Security(identity, raw_pass)))
         {
-            ESP_LOGE("main", "não conseguiu logar-se");
+            ESP_LOGE("main", "could not request security service");
             return;
         }
 
@@ -84,7 +90,7 @@ extern "C" void app_main(void)
             return;
 
         auto info_01 = table01.content();
-        string serial(info_01->mfg_serial_number, sizeof(info_01->mfg_serial_number));
+        string meter_serial(info_01->mfg_serial_number, sizeof(info_01->mfg_serial_number));
         ostringstream ofw;
         ostringstream ohw;
 
@@ -93,7 +99,7 @@ extern "C" void app_main(void)
 
         ESP_LOGI(TAG, "Meter firmware: %s", ofw.str().c_str());
         ESP_LOGI(TAG, "Meter hardware: %s", ohw.str().c_str());
-        ESP_LOGI(TAG, "Meter serial: %s", serial.c_str());
+        ESP_LOGI(TAG, "Meter serial: %s", meter_serial.c_str());
     }
     catch (const runtime_error &e)
     {

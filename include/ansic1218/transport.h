@@ -10,23 +10,20 @@
 #include <sstream>
 
 #include "services/service.h"
+#include "serial.h"
 #include "crc.h"
 
+extern "C" {
 #include "esp_log.h"
-#include "freertos/FreeRTOS.h"
-#include "driver/uart.h"
-#include "string.h"
-#include "driver/gpio.h"
+}
 
 namespace ansic1218
 {
-
     class Transport
     {
-
         struct Packet;
 
-        uart_port_t uart_num;
+        std::shared_ptr<ansic1218::Serial> serial;
 
         int receive(std::vector<uint8_t> &buffer, size_t size);
 
@@ -55,7 +52,7 @@ namespace ansic1218
         static constexpr uint8_t ACK = 0x06;
         static constexpr uint8_t NACK = 0x15;
 
-        explicit Transport(uart_port_t uart_num, int uart_baud_rate, int tx_io_num, int rx_io_num);
+        explicit Transport(std::shared_ptr<ansic1218::Serial> serial);
 
         bool request(service::Service &&service);
 

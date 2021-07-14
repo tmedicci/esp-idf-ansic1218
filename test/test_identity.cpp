@@ -6,7 +6,7 @@
 using namespace std;
 using namespace ansic1218::service;
 
-TEST_CASE("Should identify response errors", "[service][identity]")
+TEST_CASE("Should identify response errors", "[ansic1218][services][Identity]")
 {
     Identification identification;
 

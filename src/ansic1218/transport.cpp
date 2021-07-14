@@ -9,6 +9,7 @@
 #include "transport.h"
 
 using namespace std;
+using namespace chrono;
 using namespace ansic1218;
 using namespace service;
 
@@ -31,23 +32,7 @@ struct Transport::Packet
 
 } __attribute__((__packed__));
 
-static const int RX_BUF_SIZE = 1024;
-
-Transport::Transport(uart_port_t uart_num, int uart_baud_rate, int tx_io_num, int rx_io_num) : uart_num(uart_num)
-{
-
-    const uart_config_t uart_config = {
-        .baud_rate = uart_baud_rate,
-        .data_bits = UART_DATA_8_BITS,
-        .parity = UART_PARITY_DISABLE,
-        .stop_bits = UART_STOP_BITS_1,
-        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
-        .source_clk = UART_SCLK_APB};
-
-    uart_driver_install(uart_num, RX_BUF_SIZE * 2, 0, 0, NULL, 0);
-    uart_param_config(uart_num, &uart_config);
-    uart_set_pin(uart_num, tx_io_num, rx_io_num, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
-}
+Transport::Transport(shared_ptr<Serial> serial) : serial(move(serial)) {}
 
 bool Transport::request(service::Service &&service)
 {
@@ -157,8 +142,8 @@ bool Transport::request(service::Service &service)
 
 void Transport::send(const vector<uint8_t> &data)
 {
-    uart_write_bytes(uart_num, data.data(), data.size());
-    ESP_LOGD(TAG, "send(): %s .", bufToStr(data.cbegin(), data.cend()).c_str());
+    serial->write(data);
+    ESP_LOGV(TAG, "send(): %s .", bufToStr(data.cbegin(), data.cend()).c_str());
 }
 
 bool Transport::wait(std::vector<uint8_t> &buffer, const vector<uint8_t> &data)
@@ -181,12 +166,7 @@ bool Transport::wait(std::vector<uint8_t> &buffer, const vector<uint8_t> &data)
 
 int Transport::receive(vector<uint8_t> &buffer, size_t size)
 {
-
-    buffer.resize(buffer.size() + size);
-
-    auto ptr = buffer.data() + buffer.size() - size;
-
-    auto nBytesRead = uart_read_bytes(uart_num, ptr, size, 2000 / portTICK_RATE_MS);
+    auto nBytesRead = serial->read(buffer, size, seconds(2));
 
     if (nBytesRead != size)
     {
@@ -201,8 +181,7 @@ int Transport::receive(vector<uint8_t> &buffer, size_t size)
 
 void Transport::flush()
 {
-
-    for (vector<uint8_t> buffer(100); 0 < uart_read_bytes(uart_num, buffer.data(), 100, 100 / portTICK_RATE_MS);)
+	for (vector<uint8_t> buffer; 0 < serial->read(buffer, 100, milliseconds(100));)
     {
         ESP_LOGD(TAG, "Flushed:  %s", bufToStr(buffer.cbegin(), buffer.cend()).c_str());
         ESP_LOG_BUFFER_HEX_LEVEL(TAG, buffer.data(), buffer.size(), ESP_LOG_DEBUG);
