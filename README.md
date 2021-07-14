@@ -28,7 +28,7 @@ Add path to components in your [CMakeLists.txt](https://docs.espressif.com/proje
 
 ```CMake
 cmake_minimum_required(VERSION 3.5)
-set(EXTRA_COMPONENT_DIRS /home/user/myprojects/esp/esp-idf-ansic1218)
+set(EXTRA_COMPONENT_DIRS /home/user/myprojects/esp)
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(my-esp-project)
 ```

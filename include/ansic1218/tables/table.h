@@ -2,8 +2,6 @@
 #ifndef ANSIC1218_HOST_TABLE_H
 #define ANSIC1218_HOST_TABLE_H
 
-// #include <endian.h>
-// #include <machine/endian.h>
 #include <stdint.h>
 
 #include <cstdint>
