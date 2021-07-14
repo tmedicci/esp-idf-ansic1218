@@ -13,17 +13,31 @@
 // limitations under the License.
 
 
-#include "unity.h"
+#ifndef ANSIC1218_SERIALMOCK_H
+#define ANSIC1218_SERIALMOCK_H
 
-#include <ansic1218/services/identification.h>
+#include <ansic1218/serial.h>
 
-using namespace std;
-using namespace ansic1218::service;
-
-TEST_CASE("Should identify response errors", "[ansic1218][services][Identity]")
+namespace mock
 {
-    Identification identification;
 
-    vector<uint8_t> nok = { 0x01 };
-    TEST_ASSERT_FALSE(identification.response(nok.cbegin(), nok.cend()));
+    class Serial : public ansic1218::Serial
+    {
+
+        std::vector<uint8_t> request;
+        std::vector<uint8_t> response;
+
+    public:
+        Serial();
+
+        void setResponse(const std::vector<uint8_t> &response);
+
+        const std::vector<uint8_t> &getRequested() const;
+
+        void write(const std::vector<uint8_t> &buffer) override;
+
+        size_t read(std::vector<uint8_t> &buffer, size_t nBytesToRead, std::chrono::nanoseconds timeout) override;
+    };
 }
+
+#endif //ANSIC1218_SERIALMOCK_H

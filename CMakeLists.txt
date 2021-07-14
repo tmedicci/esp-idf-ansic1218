@@ -8,6 +8,7 @@ idf_component_register(SRCS "src/ansic1218/transport.cpp"
                             "src/ansic1218/services/write-full.cpp"
                             "src/ansic1218/services/write-partial.cpp"
                             "src/ansic1218/tables/table.cpp"
+                            "src/ansic1218/serial.cpp"
                     INCLUDE_DIRS "include/"
                     PRIV_INCLUDE_DIRS "include/ansic1218/" "include/ansic1218/services" "include/ansic1218/tables"
                     REQUIRES mbedtls)

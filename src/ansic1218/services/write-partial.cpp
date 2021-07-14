@@ -16,6 +16,8 @@
 #include <limits>
 #include "write-partial.h"
 
+#include "esp_log.h"
+
 using namespace std;
 using namespace ansic1218::service;
 using namespace ansic1218::table;
@@ -32,7 +34,6 @@ WritePartial::WritePartial(Table &table) : Service(__PRETTY_FUNCTION__), table(t
 
 bool WritePartial::request(std::vector<uint8_t> &buffer)
 {
-
     if (table.offset() > (numeric_limits<uint32_t>::max() >> 8))
         return 0;
 

@@ -10,3 +10,4 @@ Each patch file is specfic to a folder and the instructions regarding then are s
 
     * This patch is related to the mocking of the uart's driver in order to perform unit tests. In order to mock the uart's driver component (CMock style), it is necessary to add the `mock` folder with its `mock_config.yaml`. Also, it is necessary to change the `CMakeLists.txt` to build the mock instead actual code.
     * This patch should be applied over the IDF path (which should be previously checked out to `v4.3`)
+    * This patch is for demonstration purposes only. Actually, no unit test depends on it.
