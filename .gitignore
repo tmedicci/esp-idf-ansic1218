@@ -60,3 +60,6 @@ sdkconfig
 /.settings/
 /.pydevproject
 /__garbage__/
+
+# IDE Specific
+.vscode
