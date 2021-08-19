@@ -13,28 +13,22 @@
 // limitations under the License.
 
 
-#include "unity.h"
-
-#include "mocks/serial-mock.hpp"
 #include "ansic1218/transport.hpp"
+#include "mocks/serial-mock.hpp"
+#include "unity.h"
 
 using namespace std;
 using namespace ansic1218;
 using namespace ansic1218::service;
 
-class MockedService : public Service
-{
-
+class MockedService : public Service {
     vector<uint8_t> _request;
     vector<uint8_t> _data;
 
 public:
     MockedService() : Service(__PRETTY_FUNCTION__), _request(), _data() {}
 
-    void setRequestContent(const vector<uint8_t> &request)
-    {
-        _request = request;
-    }
+    void setRequestContent(const vector<uint8_t> &request) { _request = request; }
 
     bool request(std::vector<uint8_t> &buffer) override
     {
@@ -52,10 +46,7 @@ public:
         return true;
     }
 
-    vector<uint8_t> &data()
-    {
-        return _data;
-    }
+    vector<uint8_t> &data() { return _data; }
 };
 
 TEST_CASE("Should request and respond properly", "[ansic1218][transport]")
@@ -89,7 +80,6 @@ TEST_CASE("Should request and respond properly", "[ansic1218][transport]")
 
 TEST_CASE("Should fail on nack", "[ansic1218][transport]")
 {
-
     auto serial = make_shared<mock::Serial>();
 
     MockedService service;
@@ -110,8 +100,7 @@ TEST_CASE("Should fail on nack", "[ansic1218][transport]")
     CRC::calculate(single_request.begin() + 1, single_request.end(), single_request);
 
     vector<uint8_t> expected_request = single_request;
-    for (uint8_t i = 0; i < 3; i++)
-    {
+    for (uint8_t i = 0; i < 3; i++) {
         copy(single_request.begin() + 1, single_request.end(), back_inserter(expected_request));
     }
     expected_request.push_back(0x06);
@@ -121,7 +110,6 @@ TEST_CASE("Should fail on nack", "[ansic1218][transport]")
 
 TEST_CASE("Should request and return multiple packets (2 frames) properly", "[ansic1218][transport]")
 {
-
     auto serial = make_shared<mock::Serial>();
 
     MockedService service;
@@ -163,7 +151,6 @@ TEST_CASE("Should request and return multiple packets (2 frames) properly", "[an
 
 TEST_CASE("Should request and return multiple packets (3 frames) properly", "[ansic1218][transport]")
 {
-
     auto serial = make_shared<mock::Serial>();
 
     MockedService service;

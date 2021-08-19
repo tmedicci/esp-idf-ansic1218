@@ -14,16 +14,14 @@
 
 
 #include <limits>
-#include "write-partial.hpp"
-
 #include "esp_log.h"
+#include "write-partial.hpp"
 
 using namespace std;
 using namespace ansic1218::service;
 using namespace ansic1218::table;
 
-struct WritePartial::Request
-{
+struct WritePartial::Request {
     uint8_t type;
     uint16_t tableId;
     uint24_t offset;
@@ -37,13 +35,13 @@ bool WritePartial::request(std::vector<uint8_t> &buffer)
     if (table.offset() > (numeric_limits<uint32_t>::max() >> 8))
         return 0;
 
-    Request header{
-        .type = PARTIAL_WRITE,
-        .tableId = htobe16(table.id()),
-        .offset = {
-            .data = (htobe32(table.offset()) >> 8),
-        },
-        .count = htobe16(table.data().size())};
+    Request header{.type = PARTIAL_WRITE,
+                   .tableId = htobe16(table.id()),
+                   .offset =
+                       {
+                           .data = (htobe32(table.offset()) >> 8),
+                       },
+                   .count = htobe16(table.data().size())};
 
     uint8_t chksum = checksum(table.data().begin(), table.data().end());
 

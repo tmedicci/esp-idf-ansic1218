@@ -13,39 +13,30 @@
 // limitations under the License.
 
 
-#ifndef ANSIC1218_IDENTIFICATIONSERVICE_H
-#define ANSIC1218_IDENTIFICATIONSERVICE_H
-
-#include "service.hpp"
+#pragma once
 
 #include "esp_log.h"
+#include "service.hpp"
 
-namespace ansic1218
-{
+namespace ansic1218 {
 
-    namespace service
-    {
+namespace service {
 
-        class Identification : public Service
-        {
+class Identification : public Service {
+    std::vector<uint8_t> content;
 
-            std::vector<uint8_t> content;
+public:
+    struct Response;
+    struct DeviceIdentity;
 
-        public:
-            struct Response;
-            struct DeviceIdentity;
+    Identification();
 
-            Identification();
+    bool request(std::vector<uint8_t> &buffer) override;
 
-            bool request(std::vector<uint8_t> &buffer) override;
+    bool response(std::vector<uint8_t>::const_iterator first, std::vector<uint8_t>::const_iterator last) override;
 
-            bool
-            response(std::vector<uint8_t>::const_iterator first, std::vector<uint8_t>::const_iterator last) override;
+    std::vector<uint8_t> getDeviceIdentity();
+};
 
-            std::vector<uint8_t> getDeviceIdentity();
-        };
-
-    }
-}
-
-#endif //ANSIC1218_IDENTIFICATIONSERVICE_H
+}    // namespace service
+}    // namespace ansic1218

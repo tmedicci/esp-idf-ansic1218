@@ -31,7 +31,6 @@ Service::Service(const string &name) : _name(name.substr(0, name.rfind(':', name
 
 bool Service::validate(vector<uint8_t>::const_iterator &first, vector<uint8_t>::const_iterator &last)
 {
-
     static constexpr ResponseCode OK{0X00, "Ok"};
 
     static vector<ResponseCode> responses{
@@ -48,29 +47,20 @@ bool Service::validate(vector<uint8_t>::const_iterator &first, vector<uint8_t>::
         {0X0A, "Invalid Service Sequence State"},
     };
 
-    if (distance(first, last) <= 0)
-    {
-
+    if (distance(first, last) <= 0) {
         ESP_LOGW(TAG, "Validation Fail: Data has no content");
         return false;
-    }
-    else if (*first == OK.value)
-    {
-
+    } else if (*first == OK.value) {
         return true;
     }
 
-    auto response = find_if(responses.begin(), responses.end(), [&first](ResponseCode r)
-                            { return r.value == *first; });
+    auto response = find_if(responses.begin(), responses.end(), [&first](ResponseCode r) { return r.value == *first; });
 
     ostringstream out;
 
-    if (response == responses.end())
-    {
+    if (response == responses.end()) {
         out << "Received an unknown <NOK> code: " << int(*first);
-    }
-    else
-    {
+    } else {
         out << response->label;
     }
 
@@ -81,7 +71,6 @@ bool Service::validate(vector<uint8_t>::const_iterator &first, vector<uint8_t>::
 uint8_t Service::checksum(vector<uint8_t>::const_iterator first, vector<uint8_t>::const_iterator last)
 {
     uint8_t checksum = 0;
-    for_each(first, last, [&checksum](uint8_t value)
-             { checksum += value; });
+    for_each(first, last, [&checksum](uint8_t value) { checksum += value; });
     return ~checksum;
 }

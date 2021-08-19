@@ -60,7 +60,6 @@ string Table::name() const
 
 bool Table::response(vector<uint8_t>::const_iterator first, vector<uint8_t>::const_iterator last)
 {
-
     if (!validate(first, last))
         return false;
 
@@ -79,7 +78,6 @@ bool Table::validate(vector<uint8_t>::const_iterator first, vector<uint8_t>::con
 
 void Table::initializer(vector<uint8_t>::const_iterator first, vector<uint8_t>::const_iterator last)
 {
-
     raw_data.reserve(distance(first, last));
     raw_data.clear();
 

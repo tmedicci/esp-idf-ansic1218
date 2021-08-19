@@ -19,8 +19,7 @@ using namespace std;
 using namespace ansic1218::service;
 using namespace ansic1218::table;
 
-struct WriteFull::Request
-{
+struct WriteFull::Request {
     uint8_t type;
     uint16_t tableId;
     uint16_t count;
@@ -30,11 +29,7 @@ WriteFull::WriteFull(Table &table) : Service(__PRETTY_FUNCTION__), table(table) 
 
 bool WriteFull::request(std::vector<uint8_t> &buffer)
 {
-
-    Request header{
-        .type = FULL_WRITE,
-        .tableId = htobe16(table.id()),
-        .count = htobe16(table.data().size())};
+    Request header{.type = FULL_WRITE, .tableId = htobe16(table.id()), .count = htobe16(table.data().size())};
 
     uint8_t chksum = checksum(table.data().begin(), table.data().end());
 
