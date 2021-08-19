@@ -1,48 +1,33 @@
 
-#include "unity.h"
-
-#include <string>
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
-
-extern "C"
-{
+#include <string>
 #include "esp_log.h"
-}
-
+#include "ansic1218/services/write-full.hpp"
+#include "ansic1218/tables/table.hpp"
 #include "test-utils.hpp"
-#include <ansic1218/tables/table.hpp>
-#include <ansic1218/services/write-full.hpp>
+#include "unity.h"
 
 using namespace std;
 using namespace utils;
 using namespace ansic1218::service;
 using namespace ansic1218::table;
 
-class MockTable : public Table
-{
-
+class MockTable : public Table {
     vector<uint8_t> _data;
 
 public:
     explicit MockTable(uint16_t id) : Table(id) {}
 
-    void setData(vector<uint8_t> __data)
-    {
-        _data = __data;
-    }
+    void setData(vector<uint8_t> __data) { _data = __data; }
 
-    vector<uint8_t> &data() override
-    {
-        return _data;
-    }
+    vector<uint8_t> &data() override { return _data; }
 };
 
 TEST_CASE("Should request and validate tables properly", "[ansic1218][services][WriteFulll]")
 {
-
     Table table(55);
     WriteFull writeFull(table);
 
@@ -55,7 +40,8 @@ TEST_CASE("Should request and validate tables properly", "[ansic1218][services][
 
     writeFull.request(request);
 
-    string message = "expected: " + bufToStr(expected.cbegin(), expected.cend()) + "requested: " + bufToStr(request.cbegin(), request.cend()).c_str();
+    string message = "expected: " + bufToStr(expected.cbegin(), expected.cend()) +
+                     "requested: " + bufToStr(request.cbegin(), request.cend()).c_str();
 
     TEST_ASSERT_EQUAL_UINT8_ARRAY_MESSAGE(expected.data(), request.data(), expected.size(), message.c_str());
 }
@@ -70,18 +56,20 @@ TEST_CASE("Should request and validate tables properly", "[ansic1218][services][
  * method does not return the actual '_data' vector. It calls the base class method
  * as it has not been overloaded (returning the base class 'raw_data' vector).
  */
-TEST_CASE("Should fail to request and validate mocked table (overriden functions) with null offset", "[ansic1218][services][WriteFulll][fails]")
+TEST_CASE("Should fail to request and validate mocked table (overriden functions) with null offset",
+          "[ansic1218][services][WriteFulll][fails]")
 {
-
     MockTable table(55);
     WriteFull writeFull(table);
 
     vector<uint8_t> tableContent{19, 3, 19, 19, 4, 3, 0, 2, 0, 0};
     table.setData(tableContent);
 
-    ESP_LOGI("[ansic1218][WriteFulll] Mocked table content:", "%s", (bufToStr(table.data().cbegin(), table.data().cend()).c_str()));
+    ESP_LOGI("[ansic1218][WriteFulll] Mocked table content:", "%s",
+             (bufToStr(table.data().cbegin(), table.data().cend()).c_str()));
     ESP_LOGI("[ansic1218][WriteFulll] Mocked table address:", "%d", (uint32_t)table.data().data());
-    TEST_ASSERT_EQUAL_UINT8_ARRAY_MESSAGE(tableContent.data(), table.data().data(), tableContent.size(), bufToStr(table.data().cbegin(), table.data().cend()).c_str());
+    TEST_ASSERT_EQUAL_UINT8_ARRAY_MESSAGE(tableContent.data(), table.data().data(), tableContent.size(),
+                                          bufToStr(table.data().cbegin(), table.data().cend()).c_str());
     TEST_ASSERT_EQUAL(tableContent.size(), table.data().size());
 
     vector<uint8_t> expected{0x4F, 0, 19, 0, 0, 0, 0, 10, 19, 3, 19, 19, 4, 3, 0, 2, 0, 0, 186};
@@ -89,7 +77,8 @@ TEST_CASE("Should fail to request and validate mocked table (overriden functions
 
     TEST_ASSERT_TRUE(writeFull.request(request));
 
-    string message = "expected: " + bufToStr(expected.cbegin(), expected.cend()) + "requested: " + bufToStr(request.cbegin(), request.cend()).c_str();
+    string message = "expected: " + bufToStr(expected.cbegin(), expected.cend()) +
+                     "requested: " + bufToStr(request.cbegin(), request.cend()).c_str();
 
     TEST_ASSERT_EQUAL_UINT8_ARRAY_MESSAGE(expected.data(), request.data(), expected.size(), message.c_str());
 }

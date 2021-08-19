@@ -1,8 +1,7 @@
 
-#include "unity.h"
-
 #include <chrono>
 #include "ansic1218/serial.hpp"
+#include "unity.h"
 
 using namespace std;
 using namespace chrono;
@@ -12,10 +11,7 @@ TEST_CASE("Should send and receive data without flushing input buffer", "[ansic1
 {
     Serial serial;
 
-    serial.open(UART_NUM_2,
-                9600,
-                GPIO_NUM_25,
-                GPIO_NUM_26);
+    serial.open(UART_NUM_2, 9600, GPIO_NUM_25, GPIO_NUM_26);
 
     serial.set_loop_back();
 
@@ -38,10 +34,7 @@ TEST_CASE("Should send and receive data with flushed input buffer", "[ansic1218]
 {
     Serial serial;
 
-    serial.open(UART_NUM_2,
-                9600,
-                GPIO_NUM_25,
-                GPIO_NUM_26);
+    serial.open(UART_NUM_2, 9600, GPIO_NUM_25, GPIO_NUM_26);
 
     serial.set_loop_back();
 
@@ -64,10 +57,7 @@ TEST_CASE("Should send and receive less data than expected (by timeout)", "[ansi
 {
     Serial serial;
 
-    serial.open(UART_NUM_2,
-                9600,
-                GPIO_NUM_25,
-                GPIO_NUM_26);
+    serial.open(UART_NUM_2, 9600, GPIO_NUM_25, GPIO_NUM_26);
 
     serial.set_loop_back();
 
@@ -83,13 +73,9 @@ TEST_CASE("Should send and receive less data than expected (by timeout)", "[ansi
 
 TEST_CASE("Should send and receive data until pattern is found", "[ansic1218][serial]")
 {
-
     Serial serial;
 
-    serial.open(UART_NUM_2,
-                9600,
-                GPIO_NUM_25,
-                GPIO_NUM_26);
+    serial.open(UART_NUM_2, 9600, GPIO_NUM_25, GPIO_NUM_26);
 
     serial.set_loop_back();
 
@@ -109,13 +95,9 @@ TEST_CASE("Should send and receive data until pattern is found", "[ansic1218][se
 
 TEST_CASE("Should fail to send and receive data because pattern is not found", "[ansic1218][serial]")
 {
-
     Serial serial;
 
-    serial.open(UART_NUM_2,
-                9600,
-                GPIO_NUM_25,
-                GPIO_NUM_26);
+    serial.open(UART_NUM_2, 9600, GPIO_NUM_25, GPIO_NUM_26);
 
     serial.set_loop_back();
 

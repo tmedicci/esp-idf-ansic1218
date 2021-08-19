@@ -14,7 +14,6 @@ void Serial::write(const vector<uint8_t> &buffer)
 
 size_t Serial::read(vector<uint8_t> &buffer, size_t nBytesToRead, nanoseconds timeout)
 {
-
     nBytesToRead = nBytesToRead < response.size() ? nBytesToRead : response.size();
 
     buffer.reserve(buffer.size() + nBytesToRead);

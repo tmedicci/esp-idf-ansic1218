@@ -15,12 +15,9 @@ ReadFull::ReadFull(Table &table) : Service(__PRETTY_FUNCTION__ + table.name()), 
 
 bool ReadFull::request(std::vector<uint8_t> &buffer)
 {
-
     static_assert(sizeof(Request) == 3, "");
 
-    Request request{
-        .type = FULL_READ,
-        .table_id = htobe16(table.id())};
+    Request request{.type = FULL_READ, .table_id = htobe16(table.id())};
 
     auto *ptr = reinterpret_cast<uint8_t *>(&request);
 
@@ -31,7 +28,6 @@ bool ReadFull::request(std::vector<uint8_t> &buffer)
 
 bool ReadFull::response(vector<uint8_t>::const_iterator first, vector<uint8_t>::const_iterator last)
 {
-
     if (!Service::validate(first, last))
         return false;
 
@@ -43,8 +39,7 @@ bool ReadFull::response(vector<uint8_t>::const_iterator first, vector<uint8_t>::
     resp->count = be16toh(resp->count);
     auto expected_size = resp->count + sizeof(Response) + sizeof(chk);
 
-    if (distance(first, last) != expected_size)
-    {
+    if (distance(first, last) != expected_size) {
         ESP_LOGW(TAG, "Wrong response size, expected: %d, received: %d", int(expected_size), distance(first, last));
         return false;
     }
@@ -52,8 +47,7 @@ bool ReadFull::response(vector<uint8_t>::const_iterator first, vector<uint8_t>::
     first += sizeof(Response);
     chk = checksum(first, last - 1);
 
-    if (*prev(last) != chk)
-    {
+    if (*prev(last) != chk) {
         ESP_LOGW(TAG, "Invalid checksum, expected: %d, received: %d", int(chk), int(*prev(last)));
         return false;
     }

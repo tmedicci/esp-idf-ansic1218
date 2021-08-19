@@ -1,16 +1,12 @@
 
-#ifndef ANSIC1218_UTILS_H
-#define ANSIC1218_UTILS_H
+#pragma once
 
-#include <vector>
 #include <string>
+#include <vector>
 
 using namespace std;
 
-namespace utils
-{
+namespace utils {
 
-    std::string bufToStr(vector<uint8_t>::const_iterator first, vector<uint8_t>::const_iterator last);
+std::string bufToStr(vector<uint8_t>::const_iterator first, vector<uint8_t>::const_iterator last);
 }
-
-#endif //ANSIC1218_UTILS_H

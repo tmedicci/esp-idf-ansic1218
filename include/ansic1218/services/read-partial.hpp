@@ -1,43 +1,34 @@
 
-#ifndef ANSIC1218_HOST_READPARTIAL_H
-#define ANSIC1218_HOST_READPARTIAL_H
+#pragma once
 
 #include "../tables/table.hpp"
 #include "service.hpp"
 
-namespace ansic1218
-{
+namespace ansic1218 {
 
-    namespace service
-    {
+namespace service {
 
-        class ReadPartial : public Service
-        {
+class ReadPartial : public Service {
+    typedef struct {
+        uint32_t data : 24;
+    } __attribute__((__packed__)) uint24_t;
 
-            typedef struct
-            {
-                uint32_t data : 24;
-            } __attribute__((__packed__)) uint24_t;
+    struct Request;
 
-            struct Request;
+    struct Response;
 
-            struct Response;
+    static constexpr uint8_t PARTIAL_READ = 0x3F;
 
-            static constexpr uint8_t PARTIAL_READ = 0x3F;
+    table::Table &table;
 
-            table::Table &table;
+    uint24_t offset;
 
-            uint24_t offset;
+public:
+    explicit ReadPartial(table::Table &table);
 
-        public:
-            explicit ReadPartial(table::Table &table);
+    bool request(std::vector<uint8_t> &buffer) override;
 
-            bool request(std::vector<uint8_t> &buffer) override;
-
-            bool
-            response(std::vector<uint8_t>::const_iterator first, std::vector<uint8_t>::const_iterator last) override;
-        };
-    }
-}
-
-#endif //ANSIC1218_HOST_READPARTIAL_H
+    bool response(std::vector<uint8_t>::const_iterator first, std::vector<uint8_t>::const_iterator last) override;
+};
+}    // namespace service
+}    // namespace ansic1218

@@ -1,29 +1,23 @@
 
-#ifndef ANSIC1218_SERIALMOCK_H
-#define ANSIC1218_SERIALMOCK_H
+#pragma once
 
 #include <ansic1218/serial.hpp>
 
-namespace mock
-{
+namespace mock {
 
-    class Serial : public ansic1218::Serial
-    {
+class Serial : public ansic1218::Serial {
+    std::vector<uint8_t> request;
+    std::vector<uint8_t> response;
 
-        std::vector<uint8_t> request;
-        std::vector<uint8_t> response;
+public:
+    Serial();
 
-    public:
-        Serial();
+    void setResponse(const std::vector<uint8_t> &response);
 
-        void setResponse(const std::vector<uint8_t> &response);
+    const std::vector<uint8_t> &getRequested() const;
 
-        const std::vector<uint8_t> &getRequested() const;
+    void write(const std::vector<uint8_t> &buffer) override;
 
-        void write(const std::vector<uint8_t> &buffer) override;
-
-        size_t read(std::vector<uint8_t> &buffer, size_t nBytesToRead, std::chrono::nanoseconds timeout) override;
-    };
-}
-
-#endif //ANSIC1218_SERIALMOCK_H
+    size_t read(std::vector<uint8_t> &buffer, size_t nBytesToRead, std::chrono::nanoseconds timeout) override;
+};
+}    // namespace mock

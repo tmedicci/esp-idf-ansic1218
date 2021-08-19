@@ -1,36 +1,27 @@
 
-#ifndef ANSIC1218_HOST_WRITEFULL_H
-#define ANSIC1218_HOST_WRITEFULL_H
+#pragma once
 
+#include "esp_log.h"
 #include "../tables/table.hpp"
 #include "service.hpp"
 
-#include "esp_log.h"
+namespace ansic1218 {
 
-namespace ansic1218
-{
+namespace service {
 
-    namespace service
-    {
+class WriteFull : public Service {
+    struct Request;
 
-        class WriteFull : public Service
-        {
+    static constexpr uint8_t FULL_WRITE = 0x40;
 
-            struct Request;
+    table::Table &table;
 
-            static constexpr uint8_t FULL_WRITE = 0x40;
+public:
+    explicit WriteFull(table::Table &table);
 
-            table::Table &table;
+    bool request(std::vector<uint8_t> &buffer) override;
 
-        public:
-            explicit WriteFull(table::Table &table);
-
-            bool request(std::vector<uint8_t> &buffer) override;
-
-            bool
-            response(std::vector<uint8_t>::const_iterator first, std::vector<uint8_t>::const_iterator last) override;
-        };
-    }
-}
-
-#endif //ANSIC1218_HOST_WRITEFULL_H
+    bool response(std::vector<uint8_t>::const_iterator first, std::vector<uint8_t>::const_iterator last) override;
+};
+}    // namespace service
+}    // namespace ansic1218

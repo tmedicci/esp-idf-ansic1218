@@ -1,27 +1,19 @@
 
-#ifndef ANSIC1218_HOST_CRC_H
-#define ANSIC1218_HOST_CRC_H
+#pragma once
 
 #include <cstdint>
 #include <vector>
 
-namespace ansic1218
-{
+namespace ansic1218 {
 
-    class CRC
-    {
+class CRC {
+    static uint32_t table[256];
 
-        static uint32_t table[256];
+public:
+    static std::vector<uint8_t> &calculate(std::vector<uint8_t>::const_iterator first,
+                                           std::vector<uint8_t>::const_iterator last, std::vector<uint8_t> &&buffer);
 
-    public:
-        static std::vector<uint8_t> &calculate(std::vector<uint8_t>::const_iterator first,
-                                               std::vector<uint8_t>::const_iterator last,
-                                               std::vector<uint8_t> &&buffer);
-
-        static std::vector<uint8_t> &calculate(std::vector<uint8_t>::const_iterator first,
-                                               std::vector<uint8_t>::const_iterator last,
-                                               std::vector<uint8_t> &buffer);
-    };
-}
-
-#endif //ANSIC1218_HOST_CRC_H
+    static std::vector<uint8_t> &calculate(std::vector<uint8_t>::const_iterator first,
+                                           std::vector<uint8_t>::const_iterator last, std::vector<uint8_t> &buffer);
+};
+}    // namespace ansic1218

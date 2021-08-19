@@ -1,50 +1,38 @@
 
-#ifndef ANSIC1218_HOST_READ_H
-#define ANSIC1218_HOST_READ_H
+#pragma once
 
 #include "../tables/table.hpp"
 #include "service.hpp"
 
-namespace ansic1218
-{
+namespace ansic1218 {
 
-    namespace service
-    {
+namespace service {
 
-        class ReadFull : public Service
-        {
+class ReadFull : public Service {
+    static constexpr uint8_t FULL_READ = 0x30;
 
-            static constexpr uint8_t FULL_READ = 0x30;
+    table::Table &table;
 
-            table::Table &table;
+protected:
+    struct Request {
+        uint8_t type;
+        uint16_t table_id;
 
-        protected:
-            struct Request
-            {
+    } __attribute__((__packed__));
 
-                uint8_t type;
-                uint16_t table_id;
+    struct Response {
+        uint8_t nok;
+        uint16_t count;
+        uint8_t data[];
 
-            } __attribute__((__packed__));
+    } __attribute__((__packed__));
 
-            struct Response
-            {
+public:
+    explicit ReadFull(table::Table &);
 
-                uint8_t nok;
-                uint16_t count;
-                uint8_t data[];
+    bool request(std::vector<uint8_t> &buffer) override;
 
-            } __attribute__((__packed__));
-
-        public:
-            explicit ReadFull(table::Table &);
-
-            bool request(std::vector<uint8_t> &buffer) override;
-
-            bool
-            response(std::vector<uint8_t>::const_iterator first, std::vector<uint8_t>::const_iterator last) override;
-        };
-    }
-}
-
-#endif //ANSIC1218_HOST_READ_H
+    bool response(std::vector<uint8_t>::const_iterator first, std::vector<uint8_t>::const_iterator last) override;
+};
+}    // namespace service
+}    // namespace ansic1218

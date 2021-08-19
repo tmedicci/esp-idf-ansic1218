@@ -1,16 +1,14 @@
 
-#include "unity.h"
-
 #include <algorithm>
-#include <ansic1218/tables/table.hpp>
-#include <ansic1218/services/read-full.hpp>
+#include "ansic1218/services/read-full.hpp"
+#include "ansic1218/tables/table.hpp"
+#include "unity.h"
 
 using namespace std;
 using namespace ansic1218::service;
 using namespace ansic1218::table;
 
-class MockTable : public Table
-{
+class MockTable : public Table {
 public:
     explicit MockTable(uint16_t id) : Table(id) {}
 
@@ -19,7 +17,6 @@ public:
 
 TEST_CASE("Should request and validate tables properly", "[ansic1218][services][ReadFull]")
 {
-
     MockTable table(0x1234);
     ReadFull read_full(table);
 
@@ -28,8 +25,7 @@ TEST_CASE("Should request and validate tables properly", "[ansic1218][services][
     vector<uint8_t> response = {0x00, 0x00, uint8_t(table_data.size())};
 
     uint8_t checksum = 0;
-    for_each(table_data.begin(), table_data.end(), [&checksum](uint8_t value)
-             { checksum += value; });
+    for_each(table_data.begin(), table_data.end(), [&checksum](uint8_t value) { checksum += value; });
     checksum = ~checksum;
 
     copy(table_data.begin(), table_data.end(), back_inserter(response));

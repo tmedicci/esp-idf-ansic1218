@@ -3,12 +3,8 @@
 #include <cerrno>
 #include <csignal>
 #include <cstring>
-#include "serial.hpp"
-
-extern "C"
-{
 #include "esp_err.h"
-}
+#include "serial.hpp"
 
 using namespace std;
 using namespace chrono;
@@ -29,30 +25,26 @@ void Serial::open(uart_port_t uart_num, int uart_baud_rate, int tx_io_num, int r
 
     Serial::uart_num = uart_num;
 
-    const uart_config_t uart_config = {
-        .baud_rate = uart_baud_rate,
-        .data_bits = UART_DATA_8_BITS,
-        .parity = UART_PARITY_DISABLE,
-        .stop_bits = UART_STOP_BITS_1,
-        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
-        .rx_flow_ctrl_thresh = 122,
-        .source_clk = UART_SCLK_APB};
+    const uart_config_t uart_config = {.baud_rate = uart_baud_rate,
+                                       .data_bits = UART_DATA_8_BITS,
+                                       .parity = UART_PARITY_DISABLE,
+                                       .stop_bits = UART_STOP_BITS_1,
+                                       .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
+                                       .rx_flow_ctrl_thresh = 122,
+                                       .source_clk = UART_SCLK_APB};
 
     ret = uart_driver_install(uart_num, RX_BUF_SIZE * 2, 0, 0, NULL, 0);
-    if (ret != ESP_OK)
-    {
+    if (ret != ESP_OK) {
         throw SerialException("Failed to install uart driver: ", esp_err_to_name(ret));
     }
 
     ret = uart_param_config(uart_num, &uart_config);
-    if (ret != ESP_OK)
-    {
+    if (ret != ESP_OK) {
         throw SerialException("Failed to set uart parameters: ", esp_err_to_name(ret));
     }
 
     ret = uart_set_pin(uart_num, tx_io_num, rx_io_num, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
-    if (ret != ESP_OK)
-    {
+    if (ret != ESP_OK) {
         throw SerialException("Failed to set uart pin configuration: ", esp_err_to_name(ret));
     }
 }
@@ -62,16 +54,14 @@ void Serial::set_loop_back()
     esp_err_t ret;
 
     ret = uart_set_loop_back(uart_num, true);
-    if (ret != ESP_OK)
-    {
+    if (ret != ESP_OK) {
         throw SerialException("Failed to set uart loop back: ", esp_err_to_name(ret));
     }
 }
 
 void Serial::write(const vector<uint8_t> &buffer)
 {
-    if (uart_num < 0)
-    {
+    if (uart_num < 0) {
         throw SerialException("Failed to write to uart: uninitialized");
     }
 
@@ -79,8 +69,7 @@ void Serial::write(const vector<uint8_t> &buffer)
 
     ret = uart_write_bytes(uart_num, buffer.data(), buffer.size());
 
-    if (ret < 0)
-    {
+    if (ret < 0) {
         throw SerialException("Failed to write to uart: ", esp_err_to_name(ret));
     }
 }
@@ -90,7 +79,8 @@ size_t Serial::read(vector<uint8_t> &buffer, size_t nBytesToRead, nanoseconds ti
     return read(buffer, nBytesToRead, timeout, FlushInputBuffer::Disable);
 }
 
-size_t Serial::read(vector<uint8_t> &buffer, size_t nBytesToRead, nanoseconds timeout, FlushInputBuffer flushInputBuffer)
+size_t Serial::read(vector<uint8_t> &buffer, size_t nBytesToRead, nanoseconds timeout,
+                    FlushInputBuffer flushInputBuffer)
 {
     std::vector<uint8_t> empty;
     return read(buffer, empty, nBytesToRead, timeout, flushInputBuffer);
@@ -101,10 +91,10 @@ size_t Serial::read(vector<uint8_t> &buffer, vector<uint8_t> &pattern, size_t nB
     return read(buffer, pattern, nBytesToRead, timeout, FlushInputBuffer::Disable);
 }
 
-size_t Serial::read(vector<uint8_t> &buffer, vector<uint8_t> &pattern, size_t nBytesToRead, nanoseconds timeout, FlushInputBuffer flushInputBuffer)
+size_t Serial::read(vector<uint8_t> &buffer, vector<uint8_t> &pattern, size_t nBytesToRead, nanoseconds timeout,
+                    FlushInputBuffer flushInputBuffer)
 {
-    if (uart_num < 0)
-    {
+    if (uart_num < 0) {
         throw SerialException("Failed to write to uart: uninitialized");
     }
 
@@ -120,9 +110,7 @@ size_t Serial::read(vector<uint8_t> &buffer, vector<uint8_t> &pattern, size_t nB
 
     auto wait_until = timeout + steady_clock::now();
 
-    while (totalRead < nBytesToRead)
-    {
-
+    while (totalRead < nBytesToRead) {
         if (steady_clock::now() > wait_until)
             break;
 
@@ -130,19 +118,16 @@ size_t Serial::read(vector<uint8_t> &buffer, vector<uint8_t> &pattern, size_t nB
 
         counter = uart_read_bytes(uart_num, &ptr[totalRead], nBytesToRead - totalRead, 100 / portTICK_RATE_MS);
 
-        if (counter < 0)
-        {
+        if (counter < 0) {
             throw SerialException("Failed to read from uart: ", esp_err_to_name(counter));
         }
 
         totalRead += counter;
 
-        //check for matching pattern vector into buffer
-        if (!pattern.empty())
-        {
+        // check for matching pattern vector into buffer
+        if (!pattern.empty()) {
             auto res = search(beginOfReadData, end(buffer), begin(pattern), end(pattern));
-            if (res != end(buffer))
-            {
+            if (res != end(buffer)) {
                 totalRead = distance(beginOfReadData, res + pattern.size());
                 patternFound = true;
                 break;
@@ -150,14 +135,12 @@ size_t Serial::read(vector<uint8_t> &buffer, vector<uint8_t> &pattern, size_t nB
         }
     }
     // flush input buffer
-    if (flushInputBuffer == FlushInputBuffer::Enable)
-    {
+    if (flushInputBuffer == FlushInputBuffer::Enable) {
         esp_err_t ret;
 
         ret = uart_flush(uart_num);
 
-        if (ret < 0)
-        {
+        if (ret < 0) {
             throw SerialException("Failed to flush uart: ", esp_err_to_name(ret));
         }
     }

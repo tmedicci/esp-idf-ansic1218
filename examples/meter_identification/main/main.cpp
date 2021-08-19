@@ -8,22 +8,17 @@
 */
 
 #include <iostream>
-
-extern "C"
-{
-#include "driver/uart.h"
 #include "esp_log.h"
-}
-
 #include "ansic1218/serial.hpp"
-#include "ansic1218/transport.hpp"
 #include "ansic1218/services/identification.hpp"
-#include "ansic1218/services/security.hpp"
 #include "ansic1218/services/read-full.hpp"
 #include "ansic1218/services/read-partial.hpp"
+#include "ansic1218/services/security.hpp"
 #include "ansic1218/services/write-full.hpp"
 #include "ansic1218/services/write-partial.hpp"
 #include "ansic1218/tables/table-01.hpp"
+#include "ansic1218/transport.hpp"
+#include "driver/uart.h"
 
 using std::cout;
 using std::endl;
@@ -41,8 +36,7 @@ vector<uint8_t> HexToBytes(const char *hex_string)
     string hex(hex_string);
     vector<uint8_t> bytes;
 
-    for (unsigned int i = 0; i < hex.length(); i += 2)
-    {
+    for (unsigned int i = 0; i < hex.length(); i += 2) {
         std::string byteString = hex.substr(i, 2);
         char byte = (char)strtol(byteString.c_str(), NULL, 16);
         bytes.push_back(byte);
@@ -56,30 +50,24 @@ extern "C" void app_main(void)
     vector<uint8_t> identity{};
     vector<uint8_t> raw_pass = HexToBytes(CONFIG_ANSI_EXAMPLE_METER_PASSWORD);
 
-    try
-    {
-
+    try {
         auto serial = make_shared<Serial>();
 
-        serial->open(CONFIG_ANSI_EXAMPLE_UART_PORT_NUM,
-                     CONFIG_ANSI_EXAMPLE_UART_BAUD_RATE,
-                     CONFIG_ANSI_EXAMPLE_UART_TXD,
-                     CONFIG_ANSI_EXAMPLE_UART_RXD);
+        serial->open(CONFIG_ANSI_EXAMPLE_UART_PORT_NUM, CONFIG_ANSI_EXAMPLE_UART_BAUD_RATE,
+                     CONFIG_ANSI_EXAMPLE_UART_TXD, CONFIG_ANSI_EXAMPLE_UART_RXD);
 
         Transport transport(serial);
 
         Identification identification;
 
-        if (!transport.request(identification))
-        {
+        if (!transport.request(identification)) {
             ESP_LOGE("main", "Could not request identity service");
             return;
         }
 
         identity = identification.getDeviceIdentity();
 
-        if (!transport.request(Security(identity, raw_pass)))
-        {
+        if (!transport.request(Security(identity, raw_pass))) {
             ESP_LOGE("main", "could not request security service");
             return;
         }
@@ -100,9 +88,7 @@ extern "C" void app_main(void)
         ESP_LOGI(TAG, "Meter firmware: %s", ofw.str().c_str());
         ESP_LOGI(TAG, "Meter hardware: %s", ohw.str().c_str());
         ESP_LOGI(TAG, "Meter serial: %s", meter_serial.c_str());
-    }
-    catch (const runtime_error &e)
-    {
+    } catch (const runtime_error &e) {
         cout << "Exception caught: " << e.what() << endl;
     }
 
