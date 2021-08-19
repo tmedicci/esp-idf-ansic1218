@@ -14,7 +14,7 @@
 
 
 #include <limits>
-#include "read-partial.h"
+#include "read-partial.hpp"
 
 using namespace std;
 using namespace ansic1218::service;

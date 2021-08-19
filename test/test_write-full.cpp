@@ -26,9 +26,9 @@ extern "C"
 #include "esp_log.h"
 }
 
-#include "test-utils.h"
-#include <ansic1218/tables/table.h>
-#include <ansic1218/services/write-full.h>
+#include "test-utils.hpp"
+#include <ansic1218/tables/table.hpp>
+#include <ansic1218/services/write-full.hpp>
 
 using namespace std;
 using namespace utils;

@@ -14,7 +14,7 @@
 
 
 #include <sstream>
-#include "table.h"
+#include "table.hpp"
 
 using namespace std;
 using namespace ansic1218::table;

@@ -16,7 +16,7 @@
 #include "unity.h"
 
 #include <chrono>
-#include "ansic1218/serial.h"
+#include "ansic1218/serial.hpp"
 
 using namespace std;
 using namespace chrono;

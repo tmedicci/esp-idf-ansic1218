@@ -14,7 +14,7 @@
 
 
 #include <limits>
-#include "write-partial.h"
+#include "write-partial.hpp"
 
 #include "esp_log.h"
 

@@ -16,8 +16,8 @@
 #include "unity.h"
 
 #include <algorithm>
-#include <ansic1218/tables/table.h>
-#include <ansic1218/services/read-full.h>
+#include <ansic1218/tables/table.hpp>
+#include <ansic1218/services/read-full.hpp>
 
 using namespace std;
 using namespace ansic1218::service;

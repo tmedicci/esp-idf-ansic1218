@@ -23,9 +23,9 @@
 #include <string>
 #include <sstream>
 
-#include "services/service.h"
-#include "serial.h"
-#include "crc.h"
+#include "services/service.hpp"
+#include "serial.hpp"
+#include "crc.hpp"
 
 extern "C" {
 #include "esp_log.h"

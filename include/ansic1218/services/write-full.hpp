@@ -13,11 +13,13 @@
 // limitations under the License.
 
 
-#ifndef ANSIC1218_HOST_READ_H
-#define ANSIC1218_HOST_READ_H
+#ifndef ANSIC1218_HOST_WRITEFULL_H
+#define ANSIC1218_HOST_WRITEFULL_H
 
-#include "../tables/table.h"
-#include "service.h"
+#include "../tables/table.hpp"
+#include "service.hpp"
+
+#include "esp_log.h"
 
 namespace ansic1218
 {
@@ -25,33 +27,17 @@ namespace ansic1218
     namespace service
     {
 
-        class ReadFull : public Service
+        class WriteFull : public Service
         {
 
-            static constexpr uint8_t FULL_READ = 0x30;
+            struct Request;
+
+            static constexpr uint8_t FULL_WRITE = 0x40;
 
             table::Table &table;
 
-        protected:
-            struct Request
-            {
-
-                uint8_t type;
-                uint16_t table_id;
-
-            } __attribute__((__packed__));
-
-            struct Response
-            {
-
-                uint8_t nok;
-                uint16_t count;
-                uint8_t data[];
-
-            } __attribute__((__packed__));
-
         public:
-            explicit ReadFull(table::Table &);
+            explicit WriteFull(table::Table &table);
 
             bool request(std::vector<uint8_t> &buffer) override;
 
@@ -61,4 +47,4 @@ namespace ansic1218
     }
 }
 
-#endif //ANSIC1218_HOST_READ_H
+#endif //ANSIC1218_HOST_WRITEFULL_H

@@ -16,7 +16,7 @@
 #ifndef ANSIC1218_IDENTIFICATIONSERVICE_H
 #define ANSIC1218_IDENTIFICATIONSERVICE_H
 
-#include "service.h"
+#include "service.hpp"
 
 #include "esp_log.h"
 

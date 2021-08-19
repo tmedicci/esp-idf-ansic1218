@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-#include "crc.h"
+#include "crc.hpp"
 
 #include <algorithm>
 #include <cstdio>

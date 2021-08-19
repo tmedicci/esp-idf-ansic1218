@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-#include "test-utils.h"
+#include "test-utils.hpp"
 
 #include <algorithm>
 #include <iomanip>

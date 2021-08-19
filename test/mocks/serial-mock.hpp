@@ -16,7 +16,7 @@
 #ifndef ANSIC1218_SERIALMOCK_H
 #define ANSIC1218_SERIALMOCK_H
 
-#include <ansic1218/serial.h>
+#include <ansic1218/serial.hpp>
 
 namespace mock
 {

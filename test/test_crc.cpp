@@ -15,7 +15,7 @@
 
 #include "unity.h"
 
-#include "ansic1218/crc.h"
+#include "ansic1218/crc.hpp"
 
 using namespace std;
 using namespace ansic1218;

@@ -13,13 +13,10 @@
 // limitations under the License.
 
 
-#ifndef ANSIC1218_HOST_WRITEFULL_H
-#define ANSIC1218_HOST_WRITEFULL_H
+#ifndef ANSIC1218_HOST_SECURITY_H
+#define ANSIC1218_HOST_SECURITY_H
 
-#include "../tables/table.h"
-#include "service.h"
-
-#include "esp_log.h"
+#include "service.hpp"
 
 namespace ansic1218
 {
@@ -27,17 +24,18 @@ namespace ansic1218
     namespace service
     {
 
-        class WriteFull : public Service
+        class Security : public Service
         {
 
-            struct Request;
+            std::vector<uint8_t> _request;
+            std::vector<uint8_t> _response;
 
-            static constexpr uint8_t FULL_WRITE = 0x40;
-
-            table::Table &table;
+            static constexpr uint8_t SECURITY = 0x51;
+            static constexpr unsigned int IDENTITY_LAST_N_BYTES = 0x20;
+            static constexpr unsigned int SECURITY_PASSWORD_SIZE = 0x14;
 
         public:
-            explicit WriteFull(table::Table &table);
+            Security(const std::vector<uint8_t> &identity, const std::vector<uint8_t> &password);
 
             bool request(std::vector<uint8_t> &buffer) override;
 
@@ -47,4 +45,4 @@ namespace ansic1218
     }
 }
 
-#endif //ANSIC1218_HOST_WRITEFULL_H
+#endif //ANSIC1218_HOST_SECURITY_H
