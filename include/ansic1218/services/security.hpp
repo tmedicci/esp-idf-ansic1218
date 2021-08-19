@@ -2,7 +2,7 @@
 #ifndef ANSIC1218_HOST_SECURITY_H
 #define ANSIC1218_HOST_SECURITY_H
 
-#include "service.h"
+#include "service.hpp"
 
 namespace ansic1218
 {

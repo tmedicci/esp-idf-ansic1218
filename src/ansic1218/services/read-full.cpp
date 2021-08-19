@@ -2,8 +2,8 @@
 #include <algorithm>
 #include <iomanip>
 #include <sstream>
-#include "read-full.h"
-#include "../tables/table.h"
+#include "read-full.hpp"
+#include "../tables/table.hpp"
 
 using namespace std;
 using namespace ansic1218::service;

@@ -1,5 +1,5 @@
 
-#include "serial-mock.h"
+#include "serial-mock.hpp"
 
 using namespace std;
 using namespace chrono;

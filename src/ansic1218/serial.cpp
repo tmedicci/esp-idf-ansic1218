@@ -3,7 +3,7 @@
 #include <cerrno>
 #include <csignal>
 #include <cstring>
-#include "serial.h"
+#include "serial.hpp"
 
 extern "C"
 {

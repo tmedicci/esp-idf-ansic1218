@@ -10,7 +10,7 @@ extern "C" {
 #include "driver/gpio.h"
 }
 
-#include "exception.h"
+#include "exception.hpp"
 
 namespace ansic1218 {
 

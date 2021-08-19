@@ -2,8 +2,8 @@
 #ifndef ANSIC1218_HOST_READ_H
 #define ANSIC1218_HOST_READ_H
 
-#include "../tables/table.h"
-#include "service.h"
+#include "../tables/table.hpp"
+#include "service.hpp"
 
 namespace ansic1218
 {

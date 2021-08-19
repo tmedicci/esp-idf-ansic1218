@@ -3,7 +3,7 @@
 #define ANSIC1218_HOST_TABLE_55_H
 
 #include <cstdint>
-#include "table.h"
+#include "table.hpp"
 
 namespace ansic1218
 {

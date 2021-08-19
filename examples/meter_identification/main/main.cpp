@@ -15,15 +15,15 @@ extern "C"
 #include "esp_log.h"
 }
 
-#include "ansic1218/serial.h"
-#include "ansic1218/transport.h"
-#include "ansic1218/services/identification.h"
-#include "ansic1218/services/security.h"
-#include "ansic1218/services/read-full.h"
-#include "ansic1218/services/read-partial.h"
-#include "ansic1218/services/write-full.h"
-#include "ansic1218/services/write-partial.h"
-#include "ansic1218/tables/table-01.h"
+#include "ansic1218/serial.hpp"
+#include "ansic1218/transport.hpp"
+#include "ansic1218/services/identification.hpp"
+#include "ansic1218/services/security.hpp"
+#include "ansic1218/services/read-full.hpp"
+#include "ansic1218/services/read-partial.hpp"
+#include "ansic1218/services/write-full.hpp"
+#include "ansic1218/services/write-partial.hpp"
+#include "ansic1218/tables/table-01.hpp"
 
 using std::cout;
 using std::endl;

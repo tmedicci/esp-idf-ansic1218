@@ -1,8 +1,8 @@
 
 #include "unity.h"
 
-#include "mocks/serial-mock.h"
-#include "ansic1218/transport.h"
+#include "mocks/serial-mock.hpp"
+#include "ansic1218/transport.hpp"
 
 using namespace std;
 using namespace ansic1218;

@@ -1,11 +1,9 @@
 
-#ifndef ANSIC1218_HOST_WRITEPARTIAL_H
-#define ANSIC1218_HOST_WRITEPARTIAL_H
+#ifndef ANSIC1218_HOST_READPARTIAL_H
+#define ANSIC1218_HOST_READPARTIAL_H
 
-#include "../tables/table.h"
-#include "service.h"
-
-#include "esp_log.h"
+#include "../tables/table.hpp"
+#include "service.hpp"
 
 namespace ansic1218
 {
@@ -13,7 +11,7 @@ namespace ansic1218
     namespace service
     {
 
-        class WritePartial : public Service
+        class ReadPartial : public Service
         {
 
             typedef struct
@@ -23,14 +21,16 @@ namespace ansic1218
 
             struct Request;
 
-            static constexpr uint8_t PARTIAL_WRITE = 0x4F;
+            struct Response;
+
+            static constexpr uint8_t PARTIAL_READ = 0x3F;
 
             table::Table &table;
 
             uint24_t offset;
 
         public:
-            explicit WritePartial(table::Table &table);
+            explicit ReadPartial(table::Table &table);
 
             bool request(std::vector<uint8_t> &buffer) override;
 
@@ -40,4 +40,4 @@ namespace ansic1218
     }
 }
 
-#endif //ANSIC1218_HOST_WRITEPARTIAL_H
+#endif //ANSIC1218_HOST_READPARTIAL_H

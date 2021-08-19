@@ -4,8 +4,8 @@
 #include <algorithm>
 #include <numeric>
 
-#include <ansic1218/tables/table.h>
-#include <ansic1218/services/read-partial.h>
+#include <ansic1218/tables/table.hpp>
+#include <ansic1218/services/read-partial.hpp>
 
 using namespace std;
 using namespace ansic1218::service;
