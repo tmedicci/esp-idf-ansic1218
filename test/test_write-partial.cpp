@@ -21,7 +21,7 @@
 #include "esp_log.h"
 #include "ansic1218/services/write-partial.hpp"
 #include "ansic1218/tables/table.hpp"
-#include "test-utils.hpp"
+#include "utils/test-utils.hpp"
 #include "unity.h"
 
 using namespace std;

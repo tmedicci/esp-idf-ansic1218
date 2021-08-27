@@ -23,7 +23,6 @@
 
 #include <iostream>
 #include "esp_log.h"
-#include "ansic1218/serial.hpp"
 #include "ansic1218/services/identification.hpp"
 #include "ansic1218/services/read-full.hpp"
 #include "ansic1218/services/read-partial.hpp"
@@ -33,6 +32,7 @@
 #include "ansic1218/tables/table-01.hpp"
 #include "ansic1218/transport.hpp"
 #include "driver/uart.h"
+#include "utils/serial.hpp"
 
 using std::cout;
 using std::endl;
@@ -42,6 +42,7 @@ using namespace std;
 using namespace ansic1218;
 using namespace ansic1218::service;
 using namespace ansic1218::table;
+using namespace utils;
 
 static const char *TAG = "meter_identification";
 
