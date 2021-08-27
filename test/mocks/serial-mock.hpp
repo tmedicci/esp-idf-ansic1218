@@ -15,11 +15,11 @@
 
 #pragma once
 
-#include <ansic1218/serial.hpp>
+#include "utils/serial.hpp"
 
 namespace mock {
 
-class Serial : public ansic1218::Serial {
+class Serial : public utils::Serial {
     std::vector<uint8_t> request;
     std::vector<uint8_t> response;
 

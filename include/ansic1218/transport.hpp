@@ -23,14 +23,14 @@
 #include <vector>
 #include "esp_log.h"
 #include "crc.hpp"
-#include "serial.hpp"
+#include "utils/serial.hpp"
 #include "services/service.hpp"
 
 namespace ansic1218 {
 class Transport {
     struct Packet;
 
-    std::shared_ptr<ansic1218::Serial> serial;
+    std::shared_ptr<utils::Serial> serial;
 
     int receive(std::vector<uint8_t> &buffer, size_t size);
 
@@ -59,7 +59,7 @@ public:
     static constexpr uint8_t ACK = 0x06;
     static constexpr uint8_t NACK = 0x15;
 
-    explicit Transport(std::shared_ptr<ansic1218::Serial> serial);
+    explicit Transport(std::shared_ptr<utils::Serial> serial);
 
     bool request(service::Service &&service);
 

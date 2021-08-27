@@ -19,7 +19,7 @@ using namespace std;
 using namespace chrono;
 using namespace mock;
 
-Serial::Serial() : ansic1218::Serial(), request(), response() {}
+Serial::Serial() : utils::Serial(), request(), response() {}
 
 void Serial::write(const vector<uint8_t> &buffer)
 {

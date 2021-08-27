@@ -21,7 +21,7 @@ Clone this repository somewhere, e.g.:
 
 ```Shell
 cd ~/myprojects/esp
-git clone https://github.com/tmedicci/esp-idf-ansic1218.git
+git clone https://github.com/tmedicci/esp-idf-ansic1218.git ansic1218
 ```
 
 Add path to components in your [CMakeLists.txt](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/build-system.html):
@@ -31,6 +31,15 @@ cmake_minimum_required(VERSION 3.5)
 set(EXTRA_COMPONENT_DIRS /home/user/myprojects/esp)
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(my-esp-project)
+```
+
+### External Components
+`esp-idf-ansic1218` uses `esp-idf-libutils` as an external component in order to handle with commonly used functionalities.
+
+In the same folder level of the `esp-idf-ansic1218`, clone it:
+```Shell
+cd ~/myprojects/esp
+git clone https://github.com/tmedicci/esp-idf-libutils.git libutils
 ```
 
 ### ANSI C12.18 Examples

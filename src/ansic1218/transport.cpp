@@ -24,6 +24,7 @@ using namespace std;
 using namespace chrono;
 using namespace ansic1218;
 using namespace service;
+using namespace utils;
 
 static const char *TAG = "ansic1218::transport";
 
