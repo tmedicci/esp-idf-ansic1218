@@ -1,0 +1,11 @@
+clone:
+  depth: full
+pipelines:
+  branches:
+    master:
+      - step:
+          script:
+            - git remote add sync git@github.com:tmedicci/esp-idf-ansic1218.git
+            - git checkout master
+            - git pull
+            - git push sync master
