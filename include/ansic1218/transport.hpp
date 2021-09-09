@@ -26,11 +26,17 @@
 #include "utils/serial.hpp"
 #include "services/service.hpp"
 
+#ifndef CONFIG_ANSI_TRANSPORT_MUTEX_BLOCKTIME
+#define CONFIG_ANSI_TRANSPORT_MUTEX_BLOCKTIME 1000
+#endif
+
 namespace ansic1218 {
 class Transport {
     struct Packet;
 
     std::shared_ptr<utils::Serial> serial;
+
+    SemaphoreHandle_t transport_mutex;
 
     int receive(std::vector<uint8_t> &buffer, size_t size);
 

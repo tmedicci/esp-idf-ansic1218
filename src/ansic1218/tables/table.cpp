@@ -19,8 +19,6 @@
 using namespace std;
 using namespace ansic1218::table;
 
-static const char *TAG = "ansic1218::tables:table";
-
 Table::Table(uint16_t id) : _id(id), _offset(0) {}
 
 Table::Table(uint16_t id, uint32_t offset) : _id(id), _offset(offset) {}

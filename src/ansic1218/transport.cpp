@@ -43,7 +43,11 @@ struct Transport::Packet {
 
 } __attribute__((__packed__));
 
-Transport::Transport(shared_ptr<Serial> serial) : serial(move(serial)) {}
+Transport::Transport(shared_ptr<Serial> serial) : serial(move(serial)) {
+    transport_mutex = xSemaphoreCreateMutex();
+    if (!transport_mutex)
+        throw Exception(__PRETTY_FUNCTION__, "Failed to create transport mutex.");
+}
 
 bool Transport::request(service::Service &&service)
 {
@@ -52,6 +56,11 @@ bool Transport::request(service::Service &&service)
 
 bool Transport::request(service::Service &service)
 {
+    if (xSemaphoreTake(transport_mutex, CONFIG_ANSI_TRANSPORT_MUTEX_BLOCKTIME / portTICK_PERIOD_MS) != pdTRUE){
+        ESP_LOGW(TAG, "Timeout to take mutex");
+        return false;
+    }
+
     Packet packet{.stp = Packet::START_OF_PACKET, .identity = Packet::IDENTITY, .ctrl = 0, .seq_nbr = 0, .length = 0};
 
     const uint8_t MULTI_PACKET = 0b10000000;
@@ -67,6 +76,7 @@ bool Transport::request(service::Service &service)
 
     if (!service.request(sent)) {
         ESP_LOGW(TAG, "Could not properly build request frame");
+        xSemaphoreGive(transport_mutex);
         return false;
     }
 
@@ -92,21 +102,28 @@ bool Transport::request(service::Service &service)
         ret = wait(received, {ACK});
     }
 
-    if (!ret)
-        return nack(service, sent, received, "ACK not received.");
+    if (!ret) {
+        ret = nack(service, sent, received, "ACK not received.");
+        xSemaphoreGive(transport_mutex);
+        return ret;
+    }
 
     do {
         received.clear();
 
         if (!receive(received, sizeof(packet))) {
-            return nack(service, sent, received, "failed to receive header.");
+            ret = nack(service, sent, received, "failed to receive header.");
+            xSemaphoreGive(transport_mutex);
+            return ret;
         }
 
         ESP_LOGD(TAG, "received:");
         ESP_LOG_BUFFER_HEX_LEVEL(TAG, received.data(), received.size(), ESP_LOG_DEBUG);
         p_packet = reinterpret_cast<Packet *>(received.data() + received.size() - sizeof(packet));
         if (!validate(p_packet)) {
-            return nack(service, sent, received, "received an invalid header");
+            ret = nack(service, sent, received, "received an invalid header");
+            xSemaphoreGive(transport_mutex);
+            return ret;
         }
 
         seq_nbr = int(p_packet->seq_nbr);
@@ -119,13 +136,17 @@ bool Transport::request(service::Service &service)
         }
 
         if (!receive(received, be16toh(p_packet->length))) {
-            return nack(service, sent, received, "failed to receive response.");
+            ret = nack(service, sent, received, "failed to receive response.");
+            xSemaphoreGive(transport_mutex);
+            return ret;
         }
 
         auto crc = CRC::calculate(received.cbegin(), received.cend(), {});
 
         if (!wait(received, crc)) {
-            return nack(service, sent, received, "failed to receive CRC");
+            ret = nack(service, sent, received, "failed to receive CRC");
+            xSemaphoreGive(transport_mutex);
+            return ret;
         }
 
         send({ACK});
@@ -134,7 +155,10 @@ bool Transport::request(service::Service &service)
 
     } while (seq_nbr > 0);
 
-    return service.response(content.cbegin(), content.cend());
+
+    ret = service.response(content.cbegin(), content.cend());
+    xSemaphoreGive(transport_mutex);
+    return ret;
 }
 
 void Transport::send(const vector<uint8_t> &data)
